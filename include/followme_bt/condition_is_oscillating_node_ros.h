@@ -2,7 +2,7 @@
 #define CONDITION_ISOSCILLATING_ROS_H
 
 
-#include "behaviortree_cpp_v3/condition_node.h"
+#include "behaviortree_cpp_v3/behavior_tree.h"
 #include <ros/ros.h>
 #include <geometry_msgs/PoseStamped.h>
 

@@ -2,6 +2,8 @@
 #define PLANNORMALLY_BT_NODES_H
 #include <ros/ros.h>
 #include "behaviortree_cpp_v3/bt_factory.h"
+#include "behaviortree_cpp_v3/behavior_tree.h"
+
 #include <geometry_msgs/PoseStamped.h>
 using namespace BT;
 

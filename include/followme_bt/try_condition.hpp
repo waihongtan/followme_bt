@@ -1,8 +1,8 @@
 #ifndef CONDITIONTEST_HPP
 #define CONDITIONTEST_HPP
 
-#include "behaviortree_cpp_v3/condition_node.h"
-
+#include "behaviortree_cpp_v3/bt_factory.h"
+#include "behaviortree_cpp_v3/behavior_tree.h"
 namespace BT
 {
 class IsTrackedNode : public ConditionNode

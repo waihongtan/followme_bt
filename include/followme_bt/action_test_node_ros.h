@@ -1,7 +1,7 @@
 #ifndef ACTIONTESTROS_H
 #define ACTIONTESTROS_H
 
-#include "behaviortree_cpp_v3/action_node.h"
+#include "behaviortree_cpp_v3/behavior_tree.h"
 #include <ros/ros.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <std_msgs/Int32.h>
