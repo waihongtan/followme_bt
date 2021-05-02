@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(followme_bt)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
@@ -17,6 +17,15 @@ find_package(catkin REQUIRED COMPONENTS
 ###########
 ## Build ##
 ###########
+
+
+catkin_package(
+   DEPENDS
+   #  INCLUDE_DIRS include
+#  LIBRARIES local_planner
+#  CATKIN_DEPENDS roscpp rospy std_msgs
+#  DEPENDS system_lib
+)
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
@@ -37,7 +46,8 @@ add_library(${PROJECT_NAME}
 )
 
 add_executable(followme_bt_node src/follow_me_tree_node.cpp)
-target_link_libraries(followme_bt_node ${catkin_LIBRARIES} followme_bt)
+target_link_libraries(followme_bt_node ${catkin_LIBRARIES} ${PROJECT_NAME})
+
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries

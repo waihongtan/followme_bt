@@ -12,11 +12,12 @@ BT::NodeStatus SyncActionPlanNormally::tick()
     std_msgs::Int32 status;
 
     // auto initial_time = high_resolution_clock::now();
-    geometry_msgs::PoseStamped goal; 
+    ros::Time::now().toSec() - last_computed_
+
     getInput<geometry_msgs::PoseStamped>("input_goal",goal);
     goal_pub_.publish(goal);
     std::cout <<"publish"<<std::endl;        
-    status_ptr = ros::topic::waitForMessage<std_msgs::Int32>("/follow_status", *nh_, ros::Duration(0.2));
+    status_ptr = ros::topic::waitForMessage<std_msgs::Int32>("/follow_status", *nh_, ros::Duration(0.0));
     
     if (status_ptr != NULL)
     {
@@ -25,7 +26,7 @@ BT::NodeStatus SyncActionPlanNormally::tick()
 
     else if( !setOutput("follow_status", 0) )
     {
-        throw BT::RuntimeError("IsTrackedNode failed output");
+        throw BT::RuntimeError("Action Plan Normally failed output");
     }
 
     if ( status.data == 1 )
@@ -35,7 +36,7 @@ BT::NodeStatus SyncActionPlanNormally::tick()
 
     if( !setOutput("follow_status", status.data) )
     {
-        throw BT::RuntimeError("IsTrackedNode failed output");
+        throw BT::RuntimeError("Action Plan Normally failed output");
     }
 
     return expected_result_;

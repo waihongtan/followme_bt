@@ -1,0 +1,6 @@
+<launch>
+<node pkg="followme_bt" type="followme_bt_node" name="followme_bt_node">
+    <!-- <param name="laser_frame" type="string" value="hokuyo_laser_frame" /> -->
+  </node>
+
+</launch>

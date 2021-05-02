@@ -18,7 +18,7 @@ BT::NodeStatus ConditionIsTrackedNode::tick()
     
     boost::shared_ptr<geometry_msgs::PoseStamped const> goal_ptr;
     geometry_msgs::PoseStamped goal;
-    goal_ptr = ros::topic::waitForMessage<geometry_msgs::PoseStamped>("/global_goal", *nh_, ros::Duration(2));
+    goal_ptr = ros::topic::waitForMessage<geometry_msgs::PoseStamped>("/global_goal", *nh_, ros::Duration(0.0));
     if(goal_ptr != NULL){
         goal = *goal_ptr;
          if( !setOutput("output_goal", goal) )

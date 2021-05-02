@@ -8,9 +8,9 @@ static const char* main_xml = R"(
     <root main_tree_to_execute = "MainTree">
         <BehaviorTree ID="MainTree">
             <Sequence name="RootSequence">
-                <IsTracked name="is_tracked"/>
+                <IsTracked output_goal="{Goal}"/>
                 <Fallback>
-                    <PlanNormally name="plan_to_goal"/>
+                    <PlanNormally name="plan_to_goal" input_goal="{Goal}" follow_status="{follow}"/>
                 </Fallback>
             </Sequence>
         </BehaviorTree>
@@ -34,15 +34,16 @@ int main(int argc, char *argv[])
     BT::BehaviorTreeFactory factory;
     factory.registerBuilder<follow_me_bt_condition_nodes::ConditionIsTrackedNode>("IsTracked", is_tracked_condition_node_builder);
     factory.registerBuilder<follow_me_bt_action_nodes::SyncActionPlanNormally>("PlanNormally", plan_normally_action_node_builder);
-
+    BT::NodeStatus status = BT::NodeStatus::IDLE;
     auto tree = factory.createTreeFromText(main_xml);
+    ros::spinOnce();
     
-     while(true){
-        ros::spinOnce();
+     while(true && ros::ok() ){
         
-        while(tree.tickRoot() == BT::NodeStatus::RUNNING)
+        while((status == BT::NodeStatus::IDLE || status == BT::NodeStatus::RUNNING) && ros::ok() )
         {
-            std::this_thread::sleep_for( std::chrono::milliseconds(10) );
+            status == tree.tickRoot();
+            std::this_thread::sleep_for( std::chrono::milliseconds(1) );
         }
         tree.haltTree();
     }
