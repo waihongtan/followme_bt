@@ -2,42 +2,50 @@
 #include <string>
 #include <geometry_msgs/PoseStamped.h>
 
-namespace follow_me_bt_action_nodes{
+namespace follow_me_bt_action_nodes
+{
 
 BT::NodeStatus SyncActionPlanNormally::tick()
 {
     // using std::chrono::high_resolution_clock;
-    // tick_count_++;
-    boost::shared_ptr<std_msgs::Int32 const> status_ptr;
-    std_msgs::Int32 status;
-
-    // auto initial_time = high_resolution_clock::now();
-    ros::Time::now().toSec() - last_computed_
-
-    getInput<geometry_msgs::PoseStamped>("input_goal",goal);
-    goal_pub_.publish(goal);
-    std::cout <<"publish"<<std::endl;        
-    status_ptr = ros::topic::waitForMessage<std_msgs::Int32>("/follow_status", *nh_, ros::Duration(0.0));
+    tick_count_++;
+    ros::Rate r_(15);
+    while (ros::Time::now().toSec() - last_received_goal_ <= 0.1 && ros::ok())
+    {
+        goal_.header.stamp =  ros::Time::now() ;
+        goal_pub_.publish(goal_);
+        r_.sleep();
+        if ((ros::Time::now().toSec() - last_received_status_ <= 0.1))
+        {
+            if (status_.data == 1)
+            {
+            ROS_INFO("Planning successful");
+            
+            }
+            else
+            {
+                if( !setOutput("follow_status", status_.data) )
+                {
+                    throw BT::RuntimeError("IsTrackedNode failed output");
+                }
+                ROS_WARN("Planning failed with status %d triggering recovery!",status_.data);
+                SyncActionPlanNormally::setExpectedResult(BT::NodeStatus::FAILURE);
+                return expected_result_;
+            }
+        }
+        else
+        {
+            if( !setOutput("follow_status", 0) )
+            {
+                throw BT::RuntimeError("IsTrackedNode failed output");
+            }
+            ROS_WARN("No feedback received, planner might be down!");
+            SyncActionPlanNormally::setExpectedResult(BT::NodeStatus::FAILURE);
+            return expected_result_;
+        }
     
-    if (status_ptr != NULL)
-    {
-        status = *status_ptr;
     }
-
-    else if( !setOutput("follow_status", 0) )
-    {
-        throw BT::RuntimeError("Action Plan Normally failed output");
-    }
-
-    if ( status.data == 1 )
-    {
-        SyncActionPlanNormally::setExpectedResult(BT::NodeStatus::SUCCESS);
-    }
-
-    if( !setOutput("follow_status", status.data) )
-    {
-        throw BT::RuntimeError("Action Plan Normally failed output");
-    }
+    SyncActionPlanNormally::setExpectedResult(BT::NodeStatus::SUCCESS);
 
     return expected_result_;
 };

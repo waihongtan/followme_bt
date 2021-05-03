@@ -18,30 +18,35 @@ class SyncActionPlanNormally : public BT::SyncActionNode
         expected_result_ = BT::NodeStatus::FAILURE;
         tick_count_ = 0;
         goal_pub_ = nh_->advertise<geometry_msgs::PoseStamped>("/global_goal_bt",1);
-        goal_sub_ = nh_->subscribe("/global_goal", 1, goalCallBack);
-
+        goal_sub_ = nh_->subscribe("/global_goal", 1, &SyncActionPlanNormally::goalCallBack,this);
+        status_sub_ = nh_->subscribe("/follow_status", 1, &SyncActionPlanNormally::statusCallback,this);
     };
 
     // The method that is going to be executed by the thread
     BT::NodeStatus tick() override;
 
-    void goalCallBack(geometry_msgs::PoseStamped::ConstPtr& msg)
+    void goalCallBack(const geometry_msgs::PoseStamped::ConstPtr& msg)
     {
-      goal_ = msg;
-      last_received_ = ros::Time:now().toSec();
+      goal_ = *msg;
+      last_received_goal_ = ros::Time::now().toSec();
+    };
+
+    void statusCallback(const std_msgs::Int32::ConstPtr& msg)
+    {
+      status_ = *msg;
+      last_received_status_ = ros::Time::now().toSec();
     };
 
     void setExpectedResult(BT::NodeStatus res)
     {
-    expected_result_ = res;
-    };
 
+    expected_result_ = res;
     
+    };    
 
     static BT::PortsList providedPorts()
     {
-        return { BT::InputPort<geometry_msgs::PoseStamped>("input_goal"),
-                 BT::OutputPort<int>("follow_status") };
+        return { BT::OutputPort<int>("follow_status") };
     }
 
   private:
@@ -51,9 +56,11 @@ class SyncActionPlanNormally : public BT::SyncActionNode
     std::shared_ptr<ros::NodeHandle> nh_;   
     ros::Publisher goal_pub_;
     ros::Subscriber goal_sub_ ; 
+    ros::Subscriber status_sub_ ; 
     geometry_msgs::PoseStamped goal_;
-    std_msgs::Int32 status;
-    double last_received_ = 0;
+    std_msgs::Int32 status_;
+    double last_received_goal_ = 0;
+    double last_received_status_ = 0;
 
 
 };

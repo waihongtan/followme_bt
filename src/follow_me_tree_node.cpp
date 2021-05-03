@@ -10,7 +10,7 @@ static const char* main_xml = R"(
             <Sequence name="RootSequence">
                 <IsTracked output_goal="{Goal}"/>
                 <Fallback>
-                    <PlanNormally name="plan_to_goal" input_goal="{Goal}" follow_status="{follow}"/>
+                    <PlanNormally name="plan_to_goal"  follow_status="{follow}"/>
                 </Fallback>
             </Sequence>
         </BehaviorTree>
@@ -36,14 +36,15 @@ int main(int argc, char *argv[])
     factory.registerBuilder<follow_me_bt_action_nodes::SyncActionPlanNormally>("PlanNormally", plan_normally_action_node_builder);
     BT::NodeStatus status = BT::NodeStatus::IDLE;
     auto tree = factory.createTreeFromText(main_xml);
-    ros::spinOnce();
-    
-     while(true && ros::ok() ){
+    ros::AsyncSpinner spinner(1); 
+    spinner.start();
+    while(true && ros::ok() )
+    {
         
         while((status == BT::NodeStatus::IDLE || status == BT::NodeStatus::RUNNING) && ros::ok() )
         {
             status == tree.tickRoot();
-            std::this_thread::sleep_for( std::chrono::milliseconds(1) );
+            std::this_thread::sleep_for( std::chrono::milliseconds(50) );
         }
         tree.haltTree();
     }
