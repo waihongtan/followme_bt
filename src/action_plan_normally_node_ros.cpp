@@ -10,12 +10,14 @@ BT::NodeStatus SyncActionPlanNormally::tick()
     // using std::chrono::high_resolution_clock;
     tick_count_++;
     ros::Rate r_(15);
+    this->setExpectedResult(BT::NodeStatus::FAILURE);
+
     while (ros::Time::now().toSec() - last_received_goal_ <= 0.1 && ros::ok())
     {
         goal_.header.stamp =  ros::Time::now() ;
         goal_pub_.publish(goal_);
         r_.sleep();
-        if ((ros::Time::now().toSec() - last_received_status_ <= 0.1))
+        if ((ros::Time::now().toSec() - last_received_status_ <= 0.2))
         {
             if (status_.data == 1)
             {
@@ -35,7 +37,7 @@ BT::NodeStatus SyncActionPlanNormally::tick()
         }
         else
         {
-            if( !setOutput("follow_status", 0) )
+            if( !setOutput("follow_status", 4) )
             {
                 throw BT::RuntimeError("IsTrackedNode failed output");
             }

@@ -15,9 +15,10 @@
 namespace follow_me_bt_condition_nodes{
 BT::NodeStatus ConditionIsTrackedNode::tick()
 {
+    this->setExpectedResult(BT::NodeStatus::FAILURE);
     boost::shared_ptr<geometry_msgs::PoseStamped const> goal_ptr;
     geometry_msgs::PoseStamped goal;
-    goal_ptr = ros::topic::waitForMessage<geometry_msgs::PoseStamped>("/leg_pose", *nh_, ros::Duration(0.2));
+    goal_ptr = ros::topic::waitForMessage<geometry_msgs::PoseStamped>("/global_goal", *nh_, ros::Duration(0.2));
     if(goal_ptr != NULL){
         ROS_INFO("Tracking check done.");
 

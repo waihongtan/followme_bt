@@ -38,9 +38,10 @@ include_directories(
 add_library(${PROJECT_NAME}
   # src/action_test_node_ros.cpp
   # src/condition_test_node_ros.cpp
-  # src/condition_is_oscillating_node_ros.cpp
-  # src/action_deflate_obstacle_node_ros.cpp
-  # src/action_move_backwards_node_ros.cpp
+  src/condition_is_oscillating_node_ros.cpp
+  src/condition_is_stucked_node_ros.cpp
+  src/action_deflate_and_plan_backwards_node_ros.cpp
+  src/action_plan_backwards_node_ros.cpp
   src/action_plan_normally_node_ros.cpp
   src/condition_is_tracked_node_ros.cpp
 )
