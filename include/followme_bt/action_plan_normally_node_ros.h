@@ -61,8 +61,9 @@ class SyncActionPlanNormally : public BT::SyncActionNode
     std_msgs::Int32 status_;
     double last_received_goal_ = 0;
     double last_received_status_ = 0;
-
-
+    double stucked_timer = 0;
+    double stucked_duration = 0;
+    const double allowed_stucked_duration = 5.0;
 };
 };
 

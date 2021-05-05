@@ -22,7 +22,7 @@ BT::NodeStatus SyncActionPlanBackwards::tick()
         r_.sleep();
         if ((ros::Time::now().toSec() - last_received_status_ <= 0.2))
         {
-            if (status_.data == 1)
+            if (status_.data == 1 || status_.data == 3)
             {
             ROS_INFO("Move backwards successful for %d times",count_);
             count_ += 1;
